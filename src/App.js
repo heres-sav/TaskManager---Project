@@ -1,23 +1,39 @@
-import logo from './logo.svg';
+import { useEffect, useState } from 'react';
 import './App.css';
+import { getTodos, setTodos } from './utils/firebaseResources'; 
 
 function App() {
+  const [recents, setRecents] = useState({})
+  const [todoInput, setInput] = useState(undefined)
+  useEffect(() => {
+    const fetchTodos = async () => {
+      const recents = await getTodos()
+      console.log(recents);
+      setRecents(recents)
+    }
+    fetchTodos();
+  }, [recents.size])
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <h1>queue</h1>
       </header>
+      {
+        Object.keys(recents).map((keyName) => {
+          console.log(keyName);
+          return (<p>{ keyName + ":" + recents[keyName] }</p>)
+        })
+      }
+      <input
+        type="text"
+        onChange={ (event) => setInput(event.target.value) }/>
+      <input
+        type="button"
+        value="Add"
+        onClick={() => {
+          setTodos(todoInput)
+        }}
+      />
     </div>
   );
 }
